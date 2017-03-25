@@ -1,0 +1,117 @@
+<html>
+<header>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/Jquery-steps.css" rel="stylesheet">
+    <style>
+        .sameLine {
+            display: inline-block;
+        }
+        
+        .wizard>.actions>ul>li.disabled {
+            display: none;
+        }
+        
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 400px;
+            height: 400px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+        
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</header>
+
+<body>
+    <div id="songRecommendation" class="sameLine" style="width: 30%">
+        <h3>Song Information</h3>
+        <section>
+            <div id="container" class="panel-body">
+                <div class="form-group row">
+                    <label for="title" class="col-sm-3 col-form-label col-form-label-sm">Song title:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control form-control-sm required" id="title" name="title" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="artist" class="col-sm-3 col-form-label col-form-label-sm">Song Artist:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control form-control-sm required" id="artist" name="artist" required>
+                    </div>
+                </div>
+                <button id="searchButton" type="button">Search</button>
+                <div id="songDisplay" style="height: 70%">
+                    <div class="loader"></div>
+                </div>
+                <button id="sendButton" type="button">Send</button>
+            </div>
+
+
+
+        </section>
+        <h3>Video Link</h3>
+        <section>
+            <div class="form-group row">
+                <label for="title" class="col-sm-3 col-form-label col-form-label-sm">Video Link:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control form-control-sm required" id="videoLink" name="videoLink">
+                </div>
+            </div>
+            <button id="searchButton2" type="button">Search</button>
+            <div id="songDisplay" style="height: 70%">
+            </div>
+        </section>
+    </div>
+    <div style="padding-top:0px" id="youtubePlayer" class="sameLine" style="width: 60%; height : 80%">
+        <font size="6px"> <i>Your recommendation video will appear here once it is ready. </i> </font>
+        <iframe width="100%" height="80%" src="https://www.youtube.com/embed/LR0UGmSgMBA?list=PLhhh20Sj-srQmvBvbDEpg91ZOJkJYydi-">
+</iframe>
+    </div>
+</body>
+<script type="text/javascript">
+    $("#songRecommendation").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        autoFocus: true
+    });
+    $('#searchButton').click(function(e) {
+        var sel = document.getElementById('title');
+        var sel1 = document.getElementById('artist');
+        var songName = sel.value;
+        var artistName = sel1.value;
+        alert("Searching for " + songName + " by " + artistName + ".");
+    });
+    $('#sendButton').click(function(e) {
+        alert("Sending Song.");
+    });
+    $('#searchButton2').click(function(e) {
+        alert("Searching for song.");
+    });
+</script>
+
+</html>
