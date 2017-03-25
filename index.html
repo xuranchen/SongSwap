@@ -56,8 +56,11 @@
         $(document).ready(function() {
             $('#submitButton').click(function(e) {
                 var sel = document.getElementById('genrePicker');
-                console.log(sel.value);
-                alert("You are now in queue for " + sel.value + " music. Please wait patiently!");
+                if (sel.value != 'Genre') {
+                    var url = "/sessionWait"
+                    url += "?genre=" + sel.value
+                    window.location = url;
+                }
             });
         });
     </script>
