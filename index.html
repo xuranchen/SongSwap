@@ -23,12 +23,12 @@
             cursor: pointer;
             border-radius: 10px;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
         }
-        
+
         select {
             border: 0px solid #ccc;
             height: 25;
@@ -39,7 +39,7 @@
             cursor: pointer;
             color: white;
         }
-        
+
         @media screen and (min-width:0) {
             /* for relatively modern browsers including IE 8+ */
             select {
@@ -48,7 +48,7 @@
                 background-position: -50px -50px;
             }
         }
-        
+
         @media screen and (-webkit-min-device-pixel-ratio:0) {
             /* for Webkit */
             select {
@@ -58,7 +58,7 @@
                 padding: 3px 171px 3px 20px;
             }
         }
-        
+
         @-moz-document url-prefix() {
             /* for Firefox */
             select {
@@ -75,7 +75,7 @@
                 text-shadow: 0 0 0 #000;
             }
         }
-        
+
         @media screen and (-ms-high-contrast: active),
         (-ms-high-contrast: none) {
             /* for IE10+ */
@@ -92,9 +92,9 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </header>
 
-<body background="backgroundwater2.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
+<body background="http://localhost:3000/backgroundwater2.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
     <div align="center" id="title">
-        <img src="banner2min.png" />
+        <img src="http://localhost:3000/banner2min.png" />
     </div>
     <br>
     <br>
@@ -124,15 +124,26 @@
     </div>
 </body>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#submitButton').click(function(e) {
-            var sel = document.getElementById('genrePicker');
-            console.log(sel.value);
-            alert("You are now in queue for " + sel.value + " music. Please wait patiently!");
-            location.href = "chatClient.html";
-        });
-    });
-</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#submitButton').click(function(e) {
+                var sel = document.getElementById('genrePicker');
 
+                if (sel.value != 'Genre') {
+                    uSessionID = null
+                    $.get("/join",{"genre":sel.value }).done(function(data) {
+                        if (data != null) {
+                            uSessionID = data;
+                        }
+                    })
+
+                    var url = "/sessionWait"
+                    url += "?genre=" + sel.value + "&uID=" + uSessionID;
+                    window.location = url;
+                } else {
+                    // Must select a genre
+                }
+            });
+        });
+    </script>
 </html>
