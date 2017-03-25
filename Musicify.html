@@ -1,0 +1,64 @@
+<html>
+<header>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <style>
+        #submitbutton {
+            background-color: blue;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+
+    <body background="https://cdn.shutterstock.com/shutterstock/videos/4004494/thumb/1.jpg?i10c=img.resize(height:72)" style="background-repeat: no-repeat; background-size: cover" ;>
+        <div align="center" id="title">
+            <font size="24" color="blue">
+                <i>
+                SongSwap Recommendation App
+                </i>
+            </font>
+        </div>
+        <br>
+        <div align="center" id="image">
+            <img src="http://s0.hulkshare.com/avatar_images/original/1/3/7/137fa28774c1ec6cd0d82e0d8b2d2dbe.jpg?dd=1478526207" />
+        </div>
+        <br>
+        <div align="center" id="genreSelector ">
+            Select a genre to get a song recommendation!
+            <select id="genrePicker">
+                <option selected="true" disabled="true" >Genre</option>
+                <option value="Jazz">Jazz</option>
+                <option value="Rock">Rock</option>
+                <option value="Metal">Metal</option>
+                <option value="Rap/RnB">Rap/RnB</option>
+                 <option value="Classical">Classical</option>
+                <option value="Indie">Indie</option>
+                <option value="Foreign">Foreign</option>
+                <option value="Country">Country</option>
+                 <option value="Dubstep">Dubstep</option>
+                <option value="Trance">Trance</option>
+                <option value="House">House</option>
+                <option value="EDM">EDM</option>
+
+            </select>
+            <button id="submitButton" type="button" value="submit"> submit</button>
+        </div>
+    </body>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#submitButton').click(function(e) {
+                var sel = document.getElementById('genrePicker');
+                console.log(sel.value);
+                alert("You are now in queue for " + sel.value + " music. Please wait patiently!");
+            });
+        });
+    </script>
+
+</html>
