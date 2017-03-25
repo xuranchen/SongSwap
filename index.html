@@ -1,9 +1,17 @@
 <html>
 <header>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+
+    <!-- Firechat -->
+    <link rel="stylesheet" href="https://cdn.firebase.com/libs/firechat/3.0.1/firechat.min.css" />
+    <script src="https://cdn.firebase.com/libs/firechat/3.0.1/firechat.min.js"></script>
     <style>
         #submitbutton {
-            background-color: blue;
+            background-color: #2084ff;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -13,20 +21,91 @@
             font-size: 16px;
             margin: 4px 2px;
             cursor: pointer;
+            border-radius: 10px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        select {
+            border: 0px solid #ccc;
+            height: 25;
+            line-height: 12px;
+            margin: 0;
+            padding: 0px 20px;
+            background: #2084ff none no-repeat;
+            cursor: pointer;
+            color: white;
+        }
+
+        @media screen and (min-width:0) {
+            /* for relatively modern browsers including IE 8+ */
+            select {
+                border-radius: 4px;
+                background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAZCAYAAADnstS2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAH9JREFUeNpi/P//PwOxgImBBDDsFTP+dyJeMQsQMwNxLBCz4VF3B4j3gRT/BWJRIO7CofA7EJsgu7kbiHfgUFwAxNfQPRgHxC/QFK4E4lnYQuM1EIdCnQUC94E4HV/QHQHieiD+BcQRQPyRUNCBQgckupuicGYcTc+DTzFAgAEARhcb0a4IYZcAAAAASUVORK5CYII=");
+                background-position: -50px -50px;
+            }
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            /* for Webkit */
+            select {
+                -webkit-appearance: none;
+                background-position: 220px center;
+                /*control width*/
+                padding: 3px 171px 3px 20px;
+            }
+        }
+
+        @-moz-document url-prefix() {
+            /* for Firefox */
+            select {
+                -moz-appearance: none;
+                text-indent: 0.01px;
+                text-overflow: "";
+                background-position: right center;
+                /*controls width of main area*/
+                padding-right: 171px;
+            }
+            /* hides the dotted outline on focus in FF (See SO#3773430) */
+            select:-moz-focusring {
+                color: transparent;
+                text-shadow: 0 0 0 #000;
+            }
+        }
+
+        @media screen and (-ms-high-contrast: active),
+        (-ms-high-contrast: none) {
+            /* for IE10+ */
+            select::-ms-expand {
+                display: none;
+            }
+            select {
+                background-position: right center;
+                /*controls width?*/
+                padding-right: 170px;
+            }
         }
     </style>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</header>
 
-    <body background="http://localhost:3000/backgroundwater2.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
-        <div align="center" id="title">
-            <img src="http://localhost:3000/banner2min.png" />
-        </div>
-        <br>
-        <div align="center" id="genreSelector ">
-            Select a genre to get a song recommendation!
+<body background="http://localhost:3000/backgroundwater2.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
+    <div align="center" id="title">
+        <img src="http://localhost:3000/banner2min.png" />
+    </div>
+    <br>
+    <br>
+    <div align="center" id="genreSelector ">
+        <form id="genreForm">
+            <font size="5px"> Select a genre to get a song recommendation! <br> <br>
+            </font>
             <select id="genrePicker">
                 <option selected="true" disabled="true" >Genre</option>
+                <option value="Pop" background= "blue">Pop</option>
                 <option value="Jazz">Jazz</option>
-                <option value="Pop">Pop</option>
                 <option value="Rock">Rock</option>
                 <option value="Metal">Metal</option>
                 <option value="Rap/RnB">Rap/RnB</option>
@@ -38,21 +117,33 @@
                 <option value="Trance">Trance</option>
                 <option value="House">House</option>
                 <option value="EDM">EDM</option>
-
             </select>
+            <!--<div class="g-recaptcha" data-sitekey="6LcQTBoUAAAAAG9DLWSuZcE0w0YrZbg3imvJIII7"></div>-->
             <button id="submitButton" type="button" value="submit"> submit</button>
-        </div>
-
-    </body>
+        </form>
+    </div>
+</body>
 
     <script type="text/javascript">
         $(document).ready(function() {
             $('#submitButton').click(function(e) {
                 var sel = document.getElementById('genrePicker');
-                console.log(sel.value);
-                alert("You are now in queue for " + sel.value + " music. Please wait patiently!");
+
+                if (sel.value != 'Genre') {
+                    uSessionID = null
+                    $.get("/join",{"genre":sel.value }).done(function(data) {
+                        if (data != null) {
+                            uSessionID = data;
+                        }
+                    })
+
+                    var url = "/sessionWait"
+                    url += "?genre=" + sel.value + "&uID=" + uSessionID;
+                    window.location = url;
+                } else {
+                    // Must select a genre
+                }
             });
         });
     </script>
-
 </html>
