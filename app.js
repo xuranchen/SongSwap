@@ -1,6 +1,7 @@
 var express = require('express')
 var app = express()
 var firebase = require('firebase');
+const path = require('path');
 
 var config = {
     apiKey: "AIzaSyC1A2JD5DV8lIMNMUcfK9e5G4sgTeZ02fY",
@@ -16,25 +17,39 @@ firebase.initializeApp(config);
 
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
-  firebase.database().ref('users/' + "varun").update({
-    "ddd": "f"
-  });
+  res.sendFile(path.join(__dirname,'index.html'));
+
+
+//   firebase.database().ref('users/' + "varun").update({
+//     "ddd": "f"
+//   });
 })
 
 app.get('/join', function (req, res) {
     // waiting gif
     // reqest = {userID: ,
-        
-    res.send(Date.now().toString())
-    // create entry in firebase for given genre
 
+    var genre;
+    try {
+      genre = req['query']['genre']
+    } catch (e) {
+      console.log(e);
+    }
+    //res.send(Date.now().toString())
+    // create entry in firebase for given genre
+})
+
+app.get('/sessionWait', function (erq, res) {
+  // send session html here
+  res.send
+  res.send();
 
 })
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
+
 
 
 
