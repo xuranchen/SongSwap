@@ -6,6 +6,13 @@ const path = require('path');
 app.use(express.static('res'))
 
 
+var search = require('youtube-search');
+
+var opts = {
+  type : 'video',
+  maxResults: 1,
+  key: 'AIzaSyBVqz1ZchMm4adFEB9d2EX5fe7LFugjfPo'
+};
 
 var config = {
     apiKey: "AIzaSyC1A2JD5DV8lIMNMUcfK9e5G4sgTeZ02fY",
@@ -24,6 +31,18 @@ console.log(firebase.database().ref('test/' + "test").push().key)
 app.use(express.static('res'));
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname,'index.html'));
+})
+
+app.get('/main', function (req, res) {
+  res.sendFile(path.join(__dirname,'chatClient.html'));
+})
+app.get('/search', function(req, res) {
+    search(req.query.songName + " " + req.query.artistName, opts, function(err, results) {
+        if(err) return console.log(err);
+    console.log(results[0].link)
+    console.log(results)
+  res.send(results[0].link)
+});
 })
 
 app.get('/join', function (req, res) {
@@ -49,7 +68,7 @@ app.get('/join', function (req, res) {
       var uList = []
       uList.push(uID)
       upObj = {};
-      upObj[sessionID] = uList 
+      upObj[sessionID] = uList
       firebase.database().ref('Genres/' + genre).update(upObj);
 
       // add to users list
@@ -57,8 +76,8 @@ app.get('/join', function (req, res) {
 
 
     });
-    
-    
+
+
 })
 
 app.get('/sessionWait', function (erq, res) {

@@ -21,15 +21,15 @@
             cursor: pointer;
             border-radius: 10px;
         }
-        
+
         .sameLine {
             display: inline-block;
         }
-        
+
         .wizard>.actions>ul>li.disabled {
             display: none;
         }
-        
+
         .loader {
             border: 16px solid #f3f3f3;
             border-radius: 50%;
@@ -39,7 +39,7 @@
             -webkit-animation: spin 2s linear infinite;
             animation: spin 2s linear infinite;
         }
-        
+
         @-webkit-keyframes spin {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -48,7 +48,7 @@
                 -webkit-transform: rotate(360deg);
             }
         }
-        
+
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -101,7 +101,7 @@
     </div>
     <div style="padding-top:0px; width: 68%; height: 840px;" id="youtubePlayer" class="sameLine">
         <font size="6px"> <i>Your recommendation video will appear here once it is ready. </i> </font> <br>
-        <iframe width="100%" height="80%" src="https://www.youtube.com/embed/LR0UGmSgMBA?list=PLhhh20Sj-srQmvBvbDEpg91ZOJkJYydi-">
+        <iframe id = 'ytplayer' width="100%" height="80%" src="https://www.youtube.com/embed/LR0UGmSgMBA?list=PLhhh20Sj-srQmvBvbDEpg91ZOJkJYydi-">
         </iframe>
         <button style="border-right-width: 50px" class="interactionButtons" id="likeButton" type="button"> Like</button>
         <button class="interactionButtons" id="passButton" type="button" value="pass"> Pass</button>
@@ -122,13 +122,19 @@
         var sel1 = document.getElementById('artist');
         var songName = sel.value;
         var artistName = sel1.value;
-        if (songName == "") {
+        $.get("/search", {songName : sel.value, artistName : sel1.value}).done(function(data) {
+            console.log('reached')
+            console.log(data)
+
+            $('#ytplayer').attr("src", data.replace("watch?v=", "embed/"));
+        });
+        /*if (songName == "") {
             alert("Please fill out at least the song title input.");
         } else if (artistName == "" && songName != "") {
             alert("Searching for the song " + songName + ".");
         } else {
             alert("Searching for the song " + songName + " by " + artistName + ".");
-        }
+        }*/
     });
     $('#sendButton').click(function(e) {
         alert("Sending Song.");
