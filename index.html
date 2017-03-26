@@ -233,20 +233,16 @@
     $(document).ready(function() {
         $('#submitButton').click(function(e) {
             var sel = document.getElementById('genrePicker');
-
             if (sel.value != 'Genre') {
-                uSessionID = null
                 $.get("/join", {
                     "genre": sel.value
                 }).done(function(data) {
                     if (data != null) {
-                        uSessionID = data;
+                        var url = "/sessionWait";
+                        url += "?genre=" + sel.value + "&uID=" + data;
+                        window.location = url;
                     }
                 })
-
-                var url = "/sessionWait"
-                url += "?genre=" + sel.value + "&uID=" + uSessionID;
-                window.location = url;
             } else {
                 // Must select a genre
             }
@@ -359,19 +355,10 @@
 
         $(function() {
 
-            $('#login-form-link').click(function(event) {
-                $("#loginForm").delay(100).fadeIn(100);
-                $("#registerForm").fadeOut(100);
-                $('#register-form-link').removeClass('active');
-                $(this).addClass('active');
-                event.preventDefault();
-            });
-            $('#register-form-link').click(function(event) {
-                $("#registerForm").delay(100).fadeIn(100);
-                $("#loginForm").fadeOut(100);
-                $('#login-form-link').removeClass('active');
-                $(this).addClass('active');
-                event.preventDefault();
+
+            $('#loginSignupButton').click(function(e) {
+                console.log('reached')
+                window.location = '/login';
             });
 
         });
