@@ -24,7 +24,6 @@ var config = {
 
 firebase.initializeApp(config);
 
-console.log(firebase.database().ref('test/' + "test").push().key)
 
 
 
@@ -41,8 +40,8 @@ app.get('/search', function(req, res) {
         if(err) return console.log(err);
     console.log(results[0].link)
     console.log(results)
-  res.send(results[0].link)
-});
+    res.send({"url" : results[0].link, "title" : results[0].title})
+  });
 })
 
 app.get('/join', function (req, res) {
@@ -90,7 +89,7 @@ app.get('/join', function (req, res) {
         firebase.database().ref('Genres/' + genre).update(upObj);
         firebase.database().ref('Users/' + uID).set(sessionID);
       }
-      console.log(uID)
+      
       res.send(uID)
     });
 
@@ -116,13 +115,7 @@ app.get('/sessionCheck', function (req, res) {
         res.send({"sessionID":false});
         return;
       }
-      console.log(sessions);
-      console.log(sessionID);
-      for (var i in sessions) {
-        console.log(i)
-        console.log(i == (sessionID))
-      }
-
+      
       if (sessions != null) {
         if (typeof sessions[sessionID] != "undefined"){
           activeSession = true
@@ -141,6 +134,44 @@ app.get('/session', function (req, res) {
   res.sendFile(path.join(__dirname,'chatClient.html'));
 
 });
+
+app.get('/send', function (req, res){
+  sID = req["query"]["sID"];
+  uID = req["query"]["uID"];
+  vidURL = req["query"]["url"];
+  vTitle = req["query"]["t"];
+
+  nObj = [];
+  nObj.push(vTitle);
+  nObj.push(vidURL);
+  rObj = {}
+  rObj["result"] = nObj;
+  firebase.database().ref('ActiveSessions/' + sID + "/" + uID).set(rObj);
+  res.send({status:"success"});
+});
+app.get('/checkSong', function (req, res){
+  sID = req["query"]["sID"];
+  uID = req["query"]["uID"];
+  var found = false
+  firebase.database().ref('/ActiveSessions/' + sID).once('value').then(function(snapshot) {
+    var entrees = snapshot.val();
+    console.log(entrees);
+    for (var key in entrees) {
+      if (key != "Users" && key != uID) {
+        //found recommendation
+        found = true
+
+        console.log(entrees[key]);
+        res.send(entrees[key])
+      } 
+    }
+    if (!found) {
+      res.send({"completed": false});
+    }
+
+  });
+});
+
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
