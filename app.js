@@ -29,6 +29,7 @@ console.log(firebase.database().ref('test/' + "test").push().key)
 
 
 app.use(express.static('res'));
+app.use(express.static('css'));
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname,'index.html'));
 })
@@ -141,6 +142,57 @@ app.get('/session', function (req, res) {
   res.sendFile(path.join(__dirname,'chatClient.html'));
 
 });
+
+app.get('/login', function(req, res) {
+    res.sendFile(path.join(__dirname,'login.html'));
+});
+
+app.get('/registerRequest', function(req, res) {
+    username = req.query.username
+    password = req.query.password
+    console.log(username)
+    console.log(password)
+    firebase.database().ref('/Registered').once('value').then(function(snapshot) {
+        var registeredUsers = snapshot.val()
+        var validUserName = true
+        console.log(registeredUsers == null)
+        if (registeredUsers != null) {
+            for (users in registeredUsers) {
+                if (users == username) {
+                    validUserName = false
+                    break
+                }
+            }
+        }
+        if (validUserName) {
+            var x = {}
+            x[username] = password
+            firebase.database().ref('/Registered').update(x)
+        }
+        res.send({validUserName : validUserName})
+    })
+});
+
+app.get('/loginrequest',  function(req, res){
+    username = req.query.username
+    password = req.query.password
+    valid = false
+    firebase.database().ref('/Registered').once('value').then(function(snapshot) {
+        var registeredUsers = snapshot.val()
+        if (registeredUsers != null) {
+            for (user in registeredUsers) {
+                if (username == user && registeredUsers[user] == password) {
+                    valid = true
+                }
+            }
+        }
+        if (valid) {
+            res.send({successfulLogin : true, username : username})
+        } else {
+            res.send({successfulLogin : false})
+        }
+    })
+})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')

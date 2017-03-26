@@ -6,7 +6,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/Jquery-steps.css" rel="stylesheet">
+    <link href="http://localhost:3000/Jquery-steps.css" rel="stylesheet">
     <style>
         @CHARSET "ISO-8859-1";
         body {
@@ -118,10 +118,10 @@
     </style>
 </header>
 
-<body background="res/registrationpagebg.png">
+<body background="http://localhost:3000/registrationpagebg.png">
     <div class="container">
         <div align="center">
-            <image src="res/singsnaps.png"> </image>
+            <image src="http://localhost:3000/singsnaps.png"> </image>
             </font>
         </div>
         <div class="row">
@@ -157,7 +157,7 @@
                                 <!-- LOGIN FORM -->
                                 <!--action="<%=request.getContextPath()%>/LoginController?action=login"-->
                                 <!--method="post"-->
-                                <form id="loginForm" action="index.html" data-toggle="validator" data-disable="true" role="form" style="display: block;">
+                                <form id="loginForm" data-toggle="validator" data-disable="true" role="form" style="display: block;">
                                     <div class="form-group">
                                         <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Enter Username" value="">
                                     </div>
@@ -181,7 +181,7 @@
                                 <!--action="<%=request.getContextPath()%>/LoginController?action=register" method="post"-->
                                 <form id="registerForm" role="form" data-toggle="validator" data-disable="true" style="display: none;">
                                     <div class="form-group">
-                                        <input type="text" name="username" id="username" tabindex="1" class="form-control" data-minlength="6" placeholder="Enter Username" value="">
+                                        <input type="text" name="username" id="inputusername" tabindex="1" class="form-control" data-minlength="6" placeholder="Enter Username" value="">
                                         <span class="help-block">Minimum of 6 characters</span>
                                     </div>
                                     <div class="form-group">
@@ -225,10 +225,11 @@
             rules: {
                 "username": {
                     required: true,
-                    minlength: 5
+                    minlength: 6
                 },
                 "password": {
                     required: true,
+                    minlength: 8
 
                 },
                 "confirm-password": {
@@ -237,7 +238,21 @@
                 }
             },
             submitHandler: function(form) { // for demo
-                location.href = "login.html"; // for demo
+                $.get("/registerRequest", {username : document.getElementById('inputusername').value, password : document.getElementById('inputpassword').value}).done(function(data) {
+                    console.log(data)
+                    if (data.validUserName == false) {
+                        alert("username already exists")
+                    } else {
+                        alert("thank you for registering")
+                        $('#login-form-link').attr("class", "active");
+                        $('#register-form-link').attr("class", "");
+                        $('#loginForm').attr("style", "display : block");
+                        $('#registerForm').attr("style", "display : none");
+                    }
+                    $('#inputusername').val("");
+                    $('#inputpassword').val("");
+                    $('#confirm-password').val("");
+                }); // for demo
                 return false; // for demo
             }
         });
@@ -252,7 +267,16 @@
                 }
             },
             submitHandler: function(form) { // for demo
-                location.href = "index.html"; // for demo
+                $.get("/loginrequest", {username : document.getElementById('username').value, password : document.getElementById('password').value}).done(function(data) {
+                    if (data.successfulLogin == false) {
+                        alert("your username or password is incorrect")
+                        $('#password').val("");
+                    } else {
+                        var url = "/";
+                        url += "?username=" + data.username;
+                        window.location = url;
+                    }
+                })
                 return false; // for demo
             }
         });
