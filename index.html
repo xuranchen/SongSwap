@@ -135,15 +135,16 @@
                         if (data != null) {
                             uSessionID = data;
                         }
+                        var url = "/sessionWait"
+                        url += "?genre=" + sel.value + "&uID=" + uSessionID;
+                        window.location = url;
                     })
                     
-                    var url = "/sessionWait"
-                    url += "?genre=" + sel.value + "&uID=" + uSessionID;
-                    window.location = url;
                 } else {
                     // Must select a genre
                 }
             });
         });
     </script>
+
 </html>

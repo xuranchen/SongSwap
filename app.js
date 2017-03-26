@@ -36,36 +36,89 @@ app.get('/join', function (req, res) {
     } catch (e) {
       res.send("Error 404")
     }
+    genre.replace("/", "_")
     //check open room
-    res.send("Error")
+    var found = false;
+    var uID = null;
     firebase.database().ref('/Genres/' + genre).once('value').then(function(snapshot) {
-      console.log(snapshot.val());
       for (o in snapshot.val()) {
-        console.log(o);
+        if (snapshot.val()[o].length == 1) {
+          //add to waitlist, found person
+          uID = firebase.database().ref('Genres/' + genre + "/" + o).push().key
+          var uList = []
+          uList.push(snapshot.val()[o][0])
+          uList.push(uID)
+          upObj = {};
+          upObj[o] = uList 
+          firebase.database().ref('Genres/' + genre + "/").set(upObj);
+          firebase.database().ref('ActiveSessions/'+ o + '/Users').set(uList);
+          found = true;
+          firebase.database().ref('Users/' + uID).set(o);
+          break;
+
+        }
       }
-      // add to the waitlist
-      var sessionID = firebase.database().ref('Genres/' + genre).push().key
-      var uID = firebase.database().ref('Genres/' + genre + "/" + sessionID).push().key
-      var uList = []
-      uList.push(uID)
-      upObj = {};
-      upObj[sessionID] = uList 
-      firebase.database().ref('Genres/' + genre).update(upObj);
-
-      // add to users list
-      firebase.database().ref('Users/' + uID).set(sessionID);
-
-
+      if (!found) {
+        // add to the waitlist if no one 
+        var sessionID = firebase.database().ref('Genres/' + genre).push().key
+        uID = firebase.database().ref('Genres/' + genre + "/" + sessionID).push().key
+        var uList = []
+        uList.push(uID)
+        upObj = {};
+        upObj[sessionID] = uList 
+        firebase.database().ref('Genres/' + genre).update(upObj);
+        firebase.database().ref('Users/' + uID).set(sessionID);
+      }
+      res.send(uID)
     });
     
     
 })
 
-app.get('/sessionWait', function (erq, res) {
+app.get('/sessionWait', function (req, res) {
   // send session html here
-
-  res.sendFile(path.join(__dirname,'waitPage.html'));
+  res.send(waitScreenHTML(req["query"]["uID"]));
 })
+
+app.get('/sessionCheck', function (req, res) {
+
+  var uID = req["query"]["uID"]
+
+  var activeSession = null
+  firebase.database().ref('/Users').once('value').then(function(snapshot) {
+    var userIDs = snapshot.val();
+    var sessionID = userIDs[uID]
+    firebase.database().ref('/ActiveSessions').once('value').then(function(snappshot) {
+      var sessions = snappshot.val();
+      if (sessions == null) {
+        res.send({"sessionID":false});
+        return;
+      }
+      console.log(sessions);
+      console.log(sessionID);
+      for (var i in sessions) {
+        console.log(i)
+        console.log(i == (sessionID))
+      }
+
+      if (sessions != null) {
+        if (typeof sessions[sessionID.toString()] != "undefined"){
+          activeSession = true
+          res.send({"sessionID":sessionID});
+          return;
+        }
+      }
+      res.send({"sessionID":false});
+    });
+  });
+})
+
+app.get('/session', function (req, res) {
+  sID = req["sID"]; 
+  uID = req["uID"]
+  res.sendFile(path.join(__dirname,'chatClient.html'));
+
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
@@ -75,3 +128,45 @@ app.listen(3000, function () {
 
 
 
+
+
+function waitScreenHTML (uID)  {
+return `
+<html>
+<header> 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="res/default.css">
+  <script type="text/javascript">
+        var uID = "` + uID + `"; 
+    
+        setInterval(function(){
+              $.get("/sessionCheck",{"uID":uID}).done(function(data) {
+                if (data["sessionID"] != false) {
+                  var url = "/session";
+                  url += "?sID=" + data["sessionID"] + "&uID=" + uID;
+                  window.location = url;
+                }
+              });
+        }, 3000);
+      </script>
+  
+</header>
+<style>
+
+</style>
+<div style="width: 100%; height: 100%">
+    <div align="center" style="padding-top: 20%">
+        <div class="loader">
+        </div>
+        <div> We are searching for a match</div>
+    </div>
+</div>
+
+
+</html>
+` 
+};
