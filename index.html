@@ -231,29 +231,25 @@
     $(document).ready(function() {
         $('#submitButton').click(function(e) {
             var sel = document.getElementById('genrePicker');
-
             if (sel.value != 'Genre') {
-                uSessionID = null
-                $.get("/join", {
-                    "genre": sel.value
-                }).done(function(data) {
+                $.get("/join",{"genre":sel.value }).done(function(data) {
                     if (data != null) {
-                        uSessionID = data;
+                        var url = "/sessionWait";
+                        url += "?genre=" + sel.value + "&uID=" + data;
+                        window.location = url;
                     }
                 })
-
-                var url = "/sessionWait"
-                url += "?genre=" + sel.value + "&uID=" + uSessionID;
-                window.location = url;
             } else {
-                // Must select a genre
+                    // Must select a genre
             }
         });
         $('#loginSignupButton').click(function(e) {
             console.log('reached')
             window.location = '/login';
         });
+
     });
+
 </script>
 
 </html>
