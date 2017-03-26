@@ -118,12 +118,10 @@
     </style>
 </header>
 
-<body>
+<body background="res/registrationpagebg.png">
     <div class="container">
         <div align="center">
-            <font size=30px color="Red"><i>
-                Welcome to SongSwap!
-                <i>
+            <image src="res/singsnaps.png"> </image>
             </font>
         </div>
         <div class="row">
@@ -157,12 +155,14 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <!-- LOGIN FORM -->
-                                <form id="loginForm" action="<%=request.getContextPath()%>/LoginController?action=login" method="post" data-toggle="validator" data-disable="true" role="form" style="display: block;">
+                                <!--action="<%=request.getContextPath()%>/LoginController?action=login"-->
+                                <!--method="post"-->
+                                <form id="loginForm" action="index.html" data-toggle="validator" data-disable="true" role="form" style="display: block;">
                                     <div class="form-group">
-                                        <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Enter Username" value="" required>
+                                        <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Enter Username" value="">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Enter Password" required>
+                                        <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Enter Password">
                                     </div>
                                     <div class="form-group">
                                         <div class="row">
@@ -178,19 +178,20 @@
                                 <!-- END LOGIN FORM-->
 
                                 <!-- REGISTER FORM -->
-                                <form id="registerForm" action="<%=request.getContextPath()%>/LoginController?action=register" method="post" role="form" data-toggle="validator" data-disable="true" style="display: none;">
+                                <!--action="<%=request.getContextPath()%>/LoginController?action=register" method="post"-->
+                                <form id="registerForm" role="form" data-toggle="validator" data-disable="true" style="display: none;">
                                     <div class="form-group">
-                                        <input type="text" name="username" id="username" tabindex="1" class="form-control" data-minlength="6" placeholder="Enter Username" value="" required>
+                                        <input type="text" name="username" id="username" tabindex="1" class="form-control" data-minlength="6" placeholder="Enter Username" value="">
                                         <span class="help-block">Minimum of 6 characters</span>
                                     </div>
                                     <div class="form-group">
                                         <div class="form-inline row">
                                             <div class="form-group col-sm-6">
-                                                <input type="password" name="password" id="inputpassword" tabindex="2" class="form-control" data-minlength="8" placeholder="Enter Password" required>
+                                                <input type="password" name="password" id="inputpassword" tabindex="2" class="form-control" data-minlength="8" placeholder="Enter Password">
                                                 <span class="help-block">Minimum of 8 characters</span>
                                             </div>
                                             <div class="form-group col-sm-6">
-                                                <input type="password" name="confirm-password" id="confirm-password" tabindex="3" class="form-control" data-match="#inputpassword" data-match-error="Passwords don't match" placeholder="Confirm Password" required>
+                                                <input type="password" name="confirm-password" id="confirm-password" tabindex="3" class="form-control" data-match="#inputpassword" data-match-error="Passwords don't match" placeholder="Confirm Password">
                                                 <div class="help-block with-errors"></div>
                                             </div>
                                         </div>
@@ -215,11 +216,46 @@
             </div>
         </div>
     </div>
-    <div align = "center">
+    <div align="center">
     </div>
 </body>
 <script type="text/javascript">
     $(function() {
+        $("#registerForm").validate({
+            rules: {
+                "username": {
+                    required: true,
+                    minlength: 5
+                },
+                "password": {
+                    required: true,
+
+                },
+                "confirm-password": {
+                    equalTo: "#inputpassword",
+                    required: true,
+                }
+            },
+            submitHandler: function(form) { // for demo
+                location.href = "login.html"; // for demo
+                return false; // for demo
+            }
+        });
+        $("#loginForm").validate({
+            rules: {
+                "username": {
+                    required: true,
+                    minlength: 5
+                },
+                "password": {
+                    required: true,
+                }
+            },
+            submitHandler: function(form) { // for demo
+                location.href = "index.html"; // for demo
+                return false; // for demo
+            }
+        });
 
         $('#login-form-link').click(function(event) {
             $("#loginForm").delay(100).fadeIn(100);
@@ -235,9 +271,22 @@
             $(this).addClass('active');
             event.preventDefault();
         });
-
-
     });
+    // document.getElementById("register-submit").onclick = function() {
+    //     alert("Registration Complete!")
+    //     myFunction()
+    // };
+
+    // function myFunction() {
+    //     location.href = "login.html";
+    // }
+    // document.getElementById("login-submit").onclick = function() {
+    //     myFunction1()
+    // };
+
+    // function myFunction1() {
+    //     location.href = "index.html";
+    // }
 </script>
 
 </html>
