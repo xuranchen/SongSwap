@@ -60,8 +60,8 @@
     </style>
 </header>
 
-<body>
-    <div id="songRecommendation" class="sameLine" style="width: 30%">
+<body background="bumbumbumbum.jpg" style="background-repeat: no-repeat; background-size : 100% 100%" ;>
+    <div id="songRecommendation" class="sameLine" style="width: 31.5%">
         <h3>Song Information</h3>
         <section>
             <div id="container" class="panel-body">
@@ -98,17 +98,17 @@
             <button id="searchButton2" type="button">Search</button>
             <div id="songDisplay" style="height: 70%">
             </div>
-        </section>
     </div>
     <div style="padding-top:0px; width: 68%; height: 840px;" id="youtubePlayer" class="sameLine">
         <font size="6px"> <i>Your recommendation video will appear here once it is ready. </i> </font> <br>
         <iframe width="100%" height="80%" src="https://www.youtube.com/embed/LR0UGmSgMBA?list=PLhhh20Sj-srQmvBvbDEpg91ZOJkJYydi-">
-</iframe>
+        </iframe>
         <button style="border-right-width: 50px" class="interactionButtons" id="likeButton" type="button"> Like</button>
         <button class="interactionButtons" id="passButton" type="button" value="pass"> Pass</button>
         <button class="interactionButtons" id="alreadySeenButton" type="button" value="alreadySeenButton"> Seen </button>
         <button class="interactionButtons" id="wrongGenreButton" type="button" value="WrongGenre"> Wrong Genre</button>
     </div>
+    </section>
 </body>
 <script type="text/javascript">
     $("#songRecommendation").steps({
