@@ -21,7 +21,7 @@ console.log(firebase.database().ref('test/' + "test").push().key)
 
 
 
-
+app.use(express.static('res'));
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname,'index.html'));
 })
@@ -69,6 +69,7 @@ app.get('/join', function (req, res) {
         firebase.database().ref('Genres/' + genre).update(upObj);
         firebase.database().ref('Users/' + uID).set(sessionID);
       }
+      console.log(uID)
       res.send(uID)
     });
     
@@ -102,7 +103,7 @@ app.get('/sessionCheck', function (req, res) {
       }
 
       if (sessions != null) {
-        if (typeof sessions[sessionID.toString()] != "undefined"){
+        if (typeof sessions[sessionID] != "undefined"){
           activeSession = true
           res.send({"sessionID":sessionID});
           return;
@@ -122,7 +123,7 @@ app.get('/session', function (req, res) {
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
-})
+});
 
 
 
@@ -170,3 +171,4 @@ return `
 </html>
 ` 
 };
+

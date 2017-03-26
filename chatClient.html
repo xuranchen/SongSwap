@@ -8,6 +8,20 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/Jquery-steps.css" rel="stylesheet">
     <style>
+        .interactionButtons {
+            background-color: #2084ff;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        
         .sameLine {
             display: inline-block;
         }
@@ -46,13 +60,13 @@
     </style>
 </header>
 
-<body>
-    <div id="songRecommendation" class="sameLine" style="width: 30%">
+<body background="bumbumbumbum.jpg" style="background-repeat: no-repeat; background-size : 100% 100%" ;>
+    <div id="songRecommendation" class="sameLine" style="width: 31.5%">
         <h3>Song Information</h3>
         <section>
             <div id="container" class="panel-body">
                 <div class="form-group row">
-                    <label for="title" class="col-sm-3 col-form-label col-form-label-sm">Song title:</label>
+                    <label for="title" class="col-sm-3 col-form-label col-form-label-sm">Song Title:</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control form-control-sm required" id="title" name="title" required>
                     </div>
@@ -84,13 +98,17 @@
             <button id="searchButton2" type="button">Search</button>
             <div id="songDisplay" style="height: 70%">
             </div>
-        </section>
     </div>
-    <div style="padding-top:0px" id="youtubePlayer" class="sameLine" style="width: 60%; height : 80%">
-        <font size="6px"> <i>Your recommendation video will appear here once it is ready. </i> </font>
+    <div style="padding-top:0px; width: 68%; height: 840px;" id="youtubePlayer" class="sameLine">
+        <font size="6px"> <i>Your recommendation video will appear here once it is ready. </i> </font> <br>
         <iframe width="100%" height="80%" src="https://www.youtube.com/embed/LR0UGmSgMBA?list=PLhhh20Sj-srQmvBvbDEpg91ZOJkJYydi-">
-</iframe>
+        </iframe>
+        <button style="border-right-width: 50px" class="interactionButtons" id="likeButton" type="button"> Like</button>
+        <button class="interactionButtons" id="passButton" type="button" value="pass"> Pass</button>
+        <button class="interactionButtons" id="alreadySeenButton" type="button" value="alreadySeenButton"> Seen </button>
+        <button class="interactionButtons" id="wrongGenreButton" type="button" value="WrongGenre"> Wrong Genre</button>
     </div>
+    </section>
 </body>
 <script type="text/javascript">
     $("#songRecommendation").steps({
@@ -104,7 +122,13 @@
         var sel1 = document.getElementById('artist');
         var songName = sel.value;
         var artistName = sel1.value;
-        alert("Searching for " + songName + " by " + artistName + ".");
+        if (songName == "") {
+            alert("Please fill out at least the song title input.");
+        } else if (artistName == "" && songName != "") {
+            alert("Searching for the song " + songName + ".");
+        } else {
+            alert("Searching for the song " + songName + " by " + artistName + ".");
+        }
     });
     $('#sendButton').click(function(e) {
         alert("Sending Song.");
