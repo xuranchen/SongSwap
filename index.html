@@ -2,26 +2,27 @@
 <header>
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="    https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js"></script>
     <style>
         @CHARSET "ISO-8859-1";
         body {
             padding-top: 90px;
         }
-
+        
         .panel-login {
             border-color: #ccc;
             -webkit-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
             -moz-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
             box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
         }
-
+        
         .panel-login>.panel-heading {
             color: #00415d;
             background-color: #fff;
             border-color: #fff;
             text-align: center;
         }
-
+        
         .panel-login>.panel-heading a {
             text-decoration: none;
             color: #666;
@@ -31,12 +32,12 @@
             -moz-transition: all 0.1s linear;
             transition: all 0.1s linear;
         }
-
+        
         .panel-login>.panel-heading a.active {
             color: #029f5b;
             font-size: 18px;
         }
-
+        
         .panel-login>.panel-heading hr {
             margin-top: 10px;
             margin-bottom: 0px;
@@ -48,12 +49,12 @@
             background-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
             background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
         }
-
+        
         .error {
             color: red;
             text-align: center;
         }
-
+        
         .panel-login input[type="text"],
         .panel-login input[type="password"] {
             height: 45px;
@@ -63,7 +64,7 @@
             -moz-transition: all 0.1s linear;
             transition: all 0.1s linear;
         }
-
+        
         .panel-login input:hover,
         .panel-login input:focus {
             outline: none;
@@ -72,7 +73,7 @@
             box-shadow: none;
             border-color: #ccc;
         }
-
+        
         .btn-login {
             background-color: #59B2E0;
             outline: none;
@@ -84,14 +85,14 @@
             text-transform: uppercase;
             border-color: #59B2E6;
         }
-
+        
         .btn-login:hover,
         .btn-login:focus {
             color: #fff;
             background-color: #53A3CD;
             border-color: #53A3CD;
         }
-
+        
         .btn-register {
             background-color: #1CB94E;
             outline: none;
@@ -103,14 +104,14 @@
             text-transform: uppercase;
             border-color: #1CB94A;
         }
-
+        
         .btn-register:hover,
         .btn-register:focus {
             color: #fff;
             background-color: #1CA347;
             border-color: #1CA347;
         }
-
+        
         .UIbutton {
             background-color: #2084ff;
             border: none;
@@ -124,12 +125,12 @@
             cursor: pointer;
             border-radius: 10px;
         }
-
+        
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
         }
-
+        
         select {
             border: 0px solid #ccc;
             height: 25;
@@ -140,7 +141,7 @@
             cursor: pointer;
             color: white;
         }
-
+        
         @media screen and (min-width:0) {
             /* for relatively modern browsers including IE 8+ */
             select {
@@ -149,7 +150,7 @@
                 background-position: -50px -50px;
             }
         }
-
+        
         @media screen and (-webkit-min-device-pixel-ratio:0) {
             /* for Webkit */
             select {
@@ -159,7 +160,7 @@
                 padding: 3px 171px 3px 20px;
             }
         }
-
+        
         @-moz-document url-prefix() {
             /* for Firefox */
             select {
@@ -176,7 +177,7 @@
                 text-shadow: 0 0 0 #000;
             }
         }
-
+        
         @media screen and (-ms-high-contrast: active),
         (-ms-high-contrast: none) {
             /* for IE10+ */
@@ -193,7 +194,7 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </header>
 
-<body background="http://localhost:3000/backgroundwater2.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
+<body background="res/monsieurmoist.png" style="background-repeat: no-repeat; background-size: 100% 100%" ;>
     <div align="center" id="title">
         <img src="http://localhost:3000/banner2min.png" />
     </div>
@@ -224,6 +225,7 @@
             <button id="submitButton" class="UIbutton" type="button" value="guestLogin"> Continue as guest </button>
             <button id="loginSignupButton" class="UIbutton" type="button" value="login"> Log in / Sign up </button>
         </form>
+        <div id="chartContainer" style="height: 32%; width: 46%; opacity: 1.0;"></div>
     </div>
 </body>
 
@@ -232,7 +234,9 @@
         $('#submitButton').click(function(e) {
             var sel = document.getElementById('genrePicker');
             if (sel.value != 'Genre') {
-                $.get("/join",{"genre":sel.value }).done(function(data) {
+                $.get("/join", {
+                    "genre": sel.value
+                }).done(function(data) {
                     if (data != null) {
                         var url = "/sessionWait";
                         url += "?genre=" + sel.value + "&uID=" + data;
@@ -240,16 +244,125 @@
                     }
                 })
             } else {
-                    // Must select a genre
+                // Must select a genre
             }
         });
-        $('#loginSignupButton').click(function(e) {
-            console.log('reached')
-            window.location = '/login';
+        // var dataArray = []
+        // var songObject = [102 : "Faded"]
+        // dataArray.push(songObject);
+        var dict = []; // create an empty array
+        var Top10 = [];
+        dict.push({
+            key: "keyName",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName1",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName2",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName3",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName4",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName5",
+            value: "309"
+        });
+        dict.push({
+            key: "keyName6",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName7",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName8",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName9",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName10",
+            value: "199"
+        });
+        dict.push({
+            key: "keyName11",
+            value: "209"
+        });
+        for (var i in dict) {
+            console.log(dict[i].value);
+            Top10.push(dict[i].value);
+        }
+        Top10.sort(function(a, b) {
+            return b - a
+        });
+        console.log(Top10);
+        Top10 = Top10.slice(0, 10)
+        console.log(Top10);
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            data: [{
+                type: "column",
+                dataPoints: [{
+                    y: 102,
+                    label: "Faded"
+                }, {
+                    y: 81,
+                    label: "The Calling"
+                }, {
+                    y: 80,
+                    label: "Sing me to Sleep"
+                }, {
+                    y: 76,
+                    label: "Battlefield"
+                }, {
+                    y: 53,
+                    label: "Courtesy Call"
+                }, {
+                    y: 36,
+                    label: "Make a Move"
+                }, {
+                    y: 32,
+                    label: "Vagrant"
+                }, {
+                    y: 16,
+                    label: "Alone"
+                }, {
+                    y: 2,
+                    label: "Traitor"
+                }, {
+                    y: 1,
+                    label: "Bring Me to Life"
+                }, ]
+            }]
         });
 
-    });
+        chart.render();
+        document.getElementById("loginSignupButton").onclick = function() {
+            location.href = "login.html";
+        };
 
+        $(function() {
+
+
+            $('#loginSignupButton').click(function(e) {
+                console.log('reached')
+                window.location = '/login';
+            });
+
+        });
+    });
 </script>
 
 </html>
