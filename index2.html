@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
@@ -9,7 +10,10 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
-
+  <script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
 </head>
 <style> 
 .banner-logo {
@@ -19,9 +23,14 @@
 
 .parallax-banner {
     height: 40%;
+    max-height: 40%;
 
 }
-
+.genre-select {
+    height: 40%;
+    max-height: 40%;
+    display: none;
+}
 .nav-cont {
     font-family: 'Roboto', sans-serif;
 
@@ -36,6 +45,7 @@ nav ul a {
 }
 
 .main-content {
+    width:80%;
     max-width: 80%;
     padding-top:2rem;
 }
@@ -68,7 +78,17 @@ nav ul a {
     font-weight: 200;
     font-size: 1rem;    
 }
-
+.info-container > .col > *{
+    height: 15rem;
+}
+.genre-select h1 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 200;
+}
+.button-holder {
+    max-height: 13%;
+    height: 13%
+}
 
 </style>
 
@@ -95,37 +115,75 @@ nav ul a {
                 <img src="res/appbg.jpg"/>
             </div>
         </div>
-    </header>
-    <div class="container main-content">
-        <div class="row line-separator">
-            <button class="start-btn waves-effect waves-light btn-large col s2 offset-s5 blue accent-2 z-depth-3"> Get Started </button>
+
+        <div class="container genre-select center-align">
+            <div class="row">
+                <h1> What are you feeling? </h1>
+            </div> 
+            <div class="row">
+                <div class="input-field col s12 select-holder">
+                    <!--this will be dynamically populated from serverlist "rooms"-->
+                    <select>
+                        <option value="" disabled selected>Choose your genre</option>
+                        <option value="7">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Genre</label>
+                </div>
+                <label class="right-align" id="addSong"> Don't see your genre? </label>
+            </div> 
+
+
         </div>
 
-        <div class="row info-container center-align">
+    </header>
+    <div class="container main-content">
+        <div class="row line-separator button-holder">
+            <button class="start-btn waves-effect waves-light btn-large col s2 offset-s5 blue lighten-1 z-depth-3 "> Get Started </button>
+        </div>
+
+        <div class="row info-container center-align line-seperator">
             <div class="col s4">
-                <div class= "card-panel grey lighten-2">
+                <div class= "card-panel grey lighten-3 z-depth-4" id="step1">
                     <h1> Select Your Genre </h1>
                     <p> I could not care less about music, but you might. Go ahead, press the "Get Started" button.</p>
                 </div>
             </div>
             <div class="col s4">
-                <div class= "card-panel grey lighten-2">
+                <div class= "card-panel grey lighten-3 z-depth-4" id="step2">
                     <h1>  Choose Your Song </h1>
                     <p> Press the "Get Started" button.</p>
                 </div>
             </div>
             <div class="col s4">
-                <div class= "card-panel grey lighten-2">
+                <div class= "card-panel grey lighten-3 z-depth-4" id="step3">
                     <h1>Get One in Return </h1> 
                     <p> Please just leave.</p>
                 </div>
             </div>
-        </div> 
+        </div>
+
     </div>
 <script>
+  
     $(document).ready(function(){
+      $('select').material_select();
+      
       $('.parallax').parallax();
+      $(".start-btn").click(function() {
+            $(".start-btn").fadeOut();
+            $(".parallax-banner" ).fadeOut(1200, function() {
+                $(".genre-select" ).fadeIn( 1200, function() {
+                    $("#step1").removeClass("z-depth-4 lighten-3").addClass("z-depth-1 lighten-2");
+                });
+            });
+            
+
+      });
     });
+
+
         
 </script>
 
