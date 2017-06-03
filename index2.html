@@ -1,0 +1,133 @@
+<html>
+
+<head>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+
+</head>
+<style> 
+.banner-logo {
+    margin:auto;
+    display:inline-block;
+}
+
+.parallax-banner {
+    height: 40%;
+
+}
+
+.nav-cont {
+    font-family: 'Roboto', sans-serif;
+
+    max-width: 80%;
+}
+nav ul a {
+    color:#9e9e9e;
+}
+
+.brand-logo {
+    font-weight: 100;
+}
+
+.main-content {
+    max-width: 80%;
+    padding-top:2rem;
+}
+
+.start-btn {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.line-separator{
+    margin: 0 0 15px 0;
+    border-bottom:1px solid #cccccc;
+    padding: 0px 0 0px 0;
+    padding: 20px 0 20px 0;
+    padding: 20px 0 20px 0;
+}
+
+.info-container{ 
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    color:#9e9e9e;
+}
+
+.info-container h1{
+    font-weight: 200;
+    font-size: 2rem;    
+}
+.info-container p{
+    font-weight: 200;
+    font-size: 1rem;    
+}
+
+
+</style>
+
+
+<body>
+    
+    <header>
+        <nav>
+            <div class="nav-wrapper white">
+                <div class="nav-cont row">
+                <a href="#" class="brand-logo grey-text lighten-2">Song Swap</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down grey-text lighten-2">
+                    <li><a href="badges.html">About</a></li>
+                    <li><a href="collapsible.html">Sign in</a></li>
+                </ul>
+                <div class="nav-cont">
+            </div>
+        </nav>
+        <div class="parallax-container valign-wrapper parallax-banner">
+            <div class="banner-logo" id="title">
+                <img src="res/banner2min.png" />
+            </div>
+            <div class="parallax">
+                <img src="res/appbg.jpg"/>
+            </div>
+        </div>
+    </header>
+    <div class="container main-content">
+        <div class="row line-separator">
+            <button class="start-btn waves-effect waves-light btn-large col s2 offset-s5 blue accent-2 z-depth-3"> Get Started </button>
+        </div>
+
+        <div class="row info-container center-align">
+            <div class="col s4">
+                <div class= "card-panel grey lighten-2">
+                    <h1> Select Your Genre </h1>
+                    <p> I could not care less about music, but you might. Go ahead, press the "Get Started" button.</p>
+                </div>
+            </div>
+            <div class="col s4">
+                <div class= "card-panel grey lighten-2">
+                    <h1>  Choose Your Song </h1>
+                    <p> Press the "Get Started" button.</p>
+                </div>
+            </div>
+            <div class="col s4">
+                <div class= "card-panel grey lighten-2">
+                    <h1>Get One in Return </h1> 
+                    <p> Please just leave.</p>
+                </div>
+            </div>
+        </div> 
+    </div>
+<script>
+    $(document).ready(function(){
+      $('.parallax').parallax();
+    });
+        
+</script>
+
+</body>
+</html>
