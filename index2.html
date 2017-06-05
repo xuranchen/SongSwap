@@ -14,6 +14,8 @@
   src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
   crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 </head>
 <style> 
 .banner-logo {
@@ -79,7 +81,8 @@ nav ul a {
     font-size: 1rem;    
 }
 .info-container > .col > *{
-    height: 15rem;
+    height: 28%;
+    
 }
 .genre-select h1 {
     font-family: 'Roboto', sans-serif;
@@ -109,10 +112,10 @@ nav ul a {
         </nav>
         <div class="parallax-container valign-wrapper parallax-banner">
             <div class="banner-logo" id="title">
-                <img src="res/banner2min.png" />
+                <img src="/banner2min.png" />
             </div>
             <div class="parallax">
-                <img src="res/appbg.jpg"/>
+                <img src="/appbg.jpg"/>
             </div>
         </div>
 
@@ -124,15 +127,22 @@ nav ul a {
                 <div class="input-field col s12 select-holder">
                     <!--this will be dynamically populated from serverlist "rooms"-->
                     <select>
-                        <option value="" disabled selected>Choose your genre</option>
+                        <option value="" disabled selected>Choose a genre</option>
                         <option value="7">Option 1</option>
                         <option value="2">Option 2</option>
                         <option value="3">Option 3</option>
                     </select>
                     <label>Genre</label>
                 </div>
-                <label class="right-align" id="addSong"> Don't see your genre? </label>
-            </div> 
+                <label class="right-align" id="addSong"> Don't see your favorite genre? </label>
+            </div>
+            <div class="row">
+                <button id="enterQueue" class="waves-effect waves-light btn-large col s2 offset-s5 blue lighten-1 z-depth-3 "> Find a Match </button>
+            </div>
+            <div class="row">
+                <label class="red-text warning" style="display:none"> Please select a genre </label>
+            </div>
+
 
 
         </div>
@@ -144,19 +154,19 @@ nav ul a {
         </div>
 
         <div class="row info-container center-align line-seperator">
-            <div class="col s4">
+            <div class="col s4 m4">
                 <div class= "card-panel grey lighten-3 z-depth-4" id="step1">
                     <h1> Select Your Genre </h1>
                     <p> I could not care less about music, but you might. Go ahead, press the "Get Started" button.</p>
                 </div>
             </div>
-            <div class="col s4">
+            <div class="col s4 m4">
                 <div class= "card-panel grey lighten-3 z-depth-4" id="step2">
                     <h1>  Choose Your Song </h1>
                     <p> Press the "Get Started" button.</p>
                 </div>
             </div>
-            <div class="col s4">
+            <div class="col s4 m4">
                 <div class= "card-panel grey lighten-3 z-depth-4" id="step3">
                     <h1>Get One in Return </h1> 
                     <p> Please just leave.</p>
@@ -166,25 +176,127 @@ nav ul a {
 
     </div>
 <script>
-  
+    
     $(document).ready(function(){
-      $('select').material_select();
-      
-      $('.parallax').parallax();
-      $(".start-btn").click(function() {
+        var socket = io();
+        var socket_ID;
+        socket.on('connect', function() {
+            socket_ID = socket.id;
+        });
+        
+
+        $('select').material_select();
+
+        $('.parallax').parallax();
+        $(".start-btn").click(function() {
             $(".start-btn").fadeOut();
-            $(".parallax-banner" ).fadeOut(1200, function() {
-                $(".genre-select" ).fadeIn( 1200, function() {
+            $(".parallax-banner" ).fadeOut(500, function() {
+                $(".genre-select" ).fadeIn( 500, function() {
                     $("#step1").removeClass("z-depth-4 lighten-3").addClass("z-depth-1 lighten-2");
                 });
             });
             
 
-      });
+        });
+        //to enter queue ajax/ socket emit
+
+        //replace with loader add fade effects later
+        $("#enterQueue").click(function() {
+            //check valid input
+            var genre = getGenre();
+            if (genre == null) {
+                //invalid input -- ask for valid
+                $(".warning").show();
+                return;
+            }
+            var reqObj = {"genre" : genre}
+            console.log(socket_ID);
+            if (socket_ID == null) {
+                alert("wait until socket connection is made!");
+                return;
+            }
+            $.get("/joinqueue", {"genre":genre, "socket_ID": socket_ID}).done(function(data) {
+                if (data.success) { 
+                $(".genre-select").html(`
+                        <div class="row" style="padding-bottom: 5%;">
+                            <h1> We're finding a match </h1> 
+                        </div>
+                        <div class="preloader-wrapper big active row">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left valign-wrapper">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `.toString());
+                } else {
+                    alert("error");
+                }
+            });
+
+
+            
+          
+        });
+        //socket event
+        socket.on('message', function (data) {
+            console.log(data);
+        });
+        socket.on('match found', function (data) {
+            //data.room_ID should contain room 
+            console.log("Joined room: " + data.room_ID.toString());
+            $.get('/room', {"room_ID":data.room_ID}).done(function(ret) {
+              console.log("hit");
+              //build dashboard on succcess
+              if (ret.success) {
+                var dvtcompiled = _.template($("script[id='tmpl_join']").html());
+                var mydiv = $(".genre-select");
+                mydiv.after(dvtcompiled({"data":{}}));
+                //change progress tile
+                $("#step1").removeClass("z-depth-1 lighten-2").addClass("z-depth-4 lighten-3");
+                $("#step2").removeClass("z-depth-4 lighten-3").addClass("z-depth-1 lighten-2");
+              } else {
+                var dvtcompiled = _.template($("script[id='tmpl_err']").html());
+                var mydiv = $(".genre-select");
+                mydiv.html(dvtcompiled({"data":{}}));
+              }
+            });
+
+        });
+       
+
     });
 
+function getGenre() {
+    var val = $(".select-dropdown").val();
+    if (val == 'Choose a genre') {
+        return null;
+    } else {
+        return val;
+    }
+}
 
-        
+function initDashboard() {
+
+}
+</script>
+<script id="tmpl_dashboard" type="template/json">
+  <div class="container dashboard-container">
+  <h1 class="dashboard_init" style="display:none"> Match found 
+  </h1>
+  </div>
+
+</script>
+
+<script id="tmpl_err" type="template/json">
+  
+  <h1> Sorry, we don't know how you got to this page </h1>
+  <h2> Try refreshing <h2> 
+
 </script>
 
 </body>
